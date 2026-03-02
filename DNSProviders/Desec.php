@@ -129,27 +129,24 @@ class Desec extends AbstractDNSProvider
     public function getRecords(string $domainId): array
     {
         try {
-            $response = $this->getClient()->post("dns/retrieve/{$domainId}", [
-                'apikey' => $this->dnsProvider->credentials['apikey'],
-                'secretapikey' => $this->dnsProvider->credentials['secretapikey'],
-            ]);
+            $response = $this->getClient()->get("domains/{$domainId}/rrsets/");
 
-            if (! $response->successful() || $response->json('status') === 'ERROR') {
+            if (! $response->successful()) {
                 Log::error('Failed to fetch deSEC DNS records', ['domainId' => $domainId, 'response' => $response->json()]);
 
                 return [];
             }
 
-            return collect($response->json('records'))->map(function (array $record) {
+            return collect($response->json())->map(function (array $record) {
                 return [
-                    'id' => $record['id'],
+                    'id' => $record['subname'],
                     'type' => $record['type'],
                     'name' => $record['name'],
-                    'content' => $record['content'],
+                    'content' => $record['records'][0],
                     'ttl' => $record['ttl'],
                     'proxied' => false,
-                    'created_on' => null,
-                    'modified_on' => null,
+                    'created_on' => $record['created'],
+                    'modified_on' => $record['touched'],
                 ];
             })->toArray();
         } catch (Throwable $e) {
