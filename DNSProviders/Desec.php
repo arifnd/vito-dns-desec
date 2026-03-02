@@ -10,7 +10,7 @@ use Illuminate\Validation\ValidationException;
 use App\DNSProviders\AbstractDNSProvider;
 use Throwable;
 
-class Porkbun extends AbstractDNSProvider
+class Desec extends AbstractDNSProvider
 {
     private const string API_BASE_URL = 'https://desec.io/api/v1/';
 
