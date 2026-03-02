@@ -163,7 +163,7 @@ class Desec extends AbstractDNSProvider
             $response = $this->getClient()->post("domains/{$domainId}/rrsets/", [
                 'type' => $input['type'],
                 'subname' => $subname,
-                'content' => [$input['content']],
+                'records' => [$input['content']],
                 'ttl' => $input['ttl'] ?? 3600, // TODO: set minimum ttl to 3600
             ]);
 
