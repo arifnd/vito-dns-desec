@@ -24,7 +24,7 @@ class Plugin extends AbstractPlugin
     private function desec(): void
     {
         RegisterDNSProvider::make(Desec::id())
-            ->label('deSEC')
+            ->label('deSEC DNS Plugin')
             ->handler(Desec::class)
             ->form(
                 DynamicForm::make([
