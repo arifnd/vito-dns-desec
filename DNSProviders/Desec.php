@@ -61,7 +61,7 @@ class Desec extends AbstractDNSProvider
 
             return false;
         } catch (Throwable $e) {
-            Log::error('deSEC connection exception', ['error' => $e->getMessage()]);
+            Log::error('deSEC connection exception', ['error' => $e]);
 
             return false;
         }
