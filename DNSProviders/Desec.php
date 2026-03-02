@@ -53,7 +53,7 @@ class Desec extends AbstractDNSProvider
             // This also verifies the token has Zone:Read permissions which we need
             $response = $this->getClient()->get('');
 
-            if ($response->successful() && $response->json('status') === 'SUCCESS') {
+            if ($response->successful()) {
                 return true;
             }
 
