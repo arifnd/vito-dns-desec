@@ -66,7 +66,7 @@ class Desec extends AbstractDNSProvider
 
             return false;
         } catch (Throwable $e) {
-            Log::error('deSEC connection exception', ['error' => $e]);
+            Log::error('deSEC connection exception', ['error' => $e->getMessage()]);
 
             return false;
         }
@@ -75,10 +75,7 @@ class Desec extends AbstractDNSProvider
     public function getDomains(): array
     {
         try {
-            $response = $this->getClient()->post('domain/listAll', [
-                'apikey' => $this->dnsProvider->credentials['apikey'],
-                'secretapikey' => $this->dnsProvider->credentials['secretapikey'],
-            ]);
+            $response = $this->getClient()->get('domains/');
 
             if (! $response->successful()) {
                 Log::error('Failed to fetch deSEC domains', ['response' => $response->json()]);
@@ -86,13 +83,13 @@ class Desec extends AbstractDNSProvider
                 return [];
             }
 
-            return collect($response->json('domains'))->map(function (array $zone) {
+            return collect($response->json())->map(function (array $zone) {
                 return [
-                    'id' => $zone['domain'],
-                    'name' => $zone['domain'],
-                    'status' => $zone['status'],
-                    'created_on' => $zone['createDate'],
-                    'modified_on' => $zone['expireDate'],
+                    'id' => $zone['name'],
+                    'name' => $zone['name'],
+                    'status' => 'ACTIVE',
+                    'created_on' => $zone['created'],
+                    'modified_on' => $zone['touched'],
                 ];
             })->toArray();
         } catch (Throwable $e) {
