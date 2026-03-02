@@ -110,7 +110,7 @@ class Desec extends AbstractDNSProvider
                 return [];
             }
 
-            $zone = $response->json('domains');
+            $zone = collect($response->json())->where('name', $domainId)->first();
 
             return [
                 'id' => $zone['name'],
