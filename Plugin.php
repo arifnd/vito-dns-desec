@@ -2,7 +2,7 @@
 
 namespace App\Vito\Plugins\Arifnd\VitoDnsDesec;
 
-use App\Vito\Plugins\Arifnd\VitoDnsPorkbun\DNSProviders\Desec;
+use App\Vito\Plugins\Arifnd\VitoDnsDesec\DNSProviders\Desec;
 use App\Plugins\AbstractPlugin;
 use App\Plugins\RegisterDNSProvider;
 use App\DTOs\DynamicField;

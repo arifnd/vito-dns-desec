@@ -1,6 +1,6 @@
 <?php
 
-namespace App\Vito\Plugins\Arifnd\VitoDnsPorkbun\DNSProviders;
+namespace App\Vito\Plugins\Arifnd\VitoDnsDesec\DNSProviders;
 
 use App\Models\DNSProvider as DNSProviderModel;
 use Illuminate\Http\Client\PendingRequest;
