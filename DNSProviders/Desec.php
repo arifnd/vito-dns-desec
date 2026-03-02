@@ -28,22 +28,21 @@ class Desec extends AbstractDNSProvider
     {
         return Http::withHeaders([
             'Content-Type' => 'application/json',
+            'Authorization' => 'Token '.$this->dnsProvider->credentials['token'],
         ])->baseUrl(self::API_BASE_URL);
     }
 
     public function validationRules(array $input): array
     {
         return [
-            'apikey' => 'required|string',
-            'secretapikey' => 'required|string',
+            'token' => 'required|string',
         ];
     }
 
     public function credentialData(array $input): array
     {
         return [
-            'apikey' => $input['apikey'],
-            'secretapikey' => $input['secretapikey'],
+            'token' => $input['token'],
         ];
     }
 
@@ -52,20 +51,17 @@ class Desec extends AbstractDNSProvider
         try {
             // Use /zones endpoint to verify token works for both user-scoped and account-scoped tokens
             // This also verifies the token has Zone:Read permissions which we need
-            $response = $this->getClient()->post('ping', [
-                'apikey' => $credentials['apikey'],
-                'secretapikey' => $credentials['secretapikey'],
-            ]);
+            $response = $this->getClient()->get('');
 
             if ($response->successful() && $response->json('status') === 'SUCCESS') {
                 return true;
             }
 
-            Log::error('Porkbun connection failed', ['response' => $response->json()]);
+            Log::error('deSEC connection failed', ['response' => $response->json()]);
 
             return false;
         } catch (Throwable $e) {
-            Log::error('Porkbun connection exception', ['error' => $e->getMessage()]);
+            Log::error('deSEC connection exception', ['error' => $e->getMessage()]);
 
             return false;
         }
@@ -80,7 +76,7 @@ class Desec extends AbstractDNSProvider
             ]);
 
             if (! $response->successful()) {
-                Log::error('Failed to fetch Porkbun domains', ['response' => $response->json()]);
+                Log::error('Failed to fetch deSEC domains', ['response' => $response->json()]);
 
                 return [];
             }
@@ -95,7 +91,7 @@ class Desec extends AbstractDNSProvider
                 ];
             })->toArray();
         } catch (Throwable $e) {
-            Log::error('Porkbun getDomains exception', ['error' => $e->getMessage()]);
+            Log::error('deSEC getDomains exception', ['error' => $e->getMessage()]);
 
             return [];
         }
@@ -110,7 +106,7 @@ class Desec extends AbstractDNSProvider
             ]);
 
             if (! $response->successful()) {
-                Log::error('Failed to fetch Porkbun domain', ['domainId' => $domainId, 'response' => $response->json()]);
+                Log::error('Failed to fetch deSEC domain', ['domainId' => $domainId, 'response' => $response->json()]);
 
                 return [];
             }
@@ -125,7 +121,7 @@ class Desec extends AbstractDNSProvider
                 'modified_on' => $zone['expireDate'],
             ];
         } catch (Throwable $e) {
-            Log::error('Porkbun getDomain exception', ['error' => $e->getMessage()]);
+            Log::error('deSEC getDomain exception', ['error' => $e->getMessage()]);
 
             return [];
         }
@@ -140,7 +136,7 @@ class Desec extends AbstractDNSProvider
             ]);
 
             if (! $response->successful() || $response->json('status') === 'ERROR') {
-                Log::error('Failed to fetch Porkbun DNS records', ['domainId' => $domainId, 'response' => $response->json()]);
+                Log::error('Failed to fetch deSEC DNS records', ['domainId' => $domainId, 'response' => $response->json()]);
 
                 return [];
             }
@@ -158,7 +154,7 @@ class Desec extends AbstractDNSProvider
                 ];
             })->toArray();
         } catch (Throwable $e) {
-            Log::error('Porkbun getRecords exception', ['error' => $e->getMessage()]);
+            Log::error('deSEC getRecords exception', ['error' => $e->getMessage()]);
 
             return [];
         }
@@ -177,7 +173,7 @@ class Desec extends AbstractDNSProvider
             ]);
 
             if (! $response->successful()) {
-                Log::error('Failed to create Porkbun DNS record', ['domainId' => $domainId, 'input' => $input, 'response' => $response->json()]);
+                Log::error('Failed to create deSEC DNS record', ['domainId' => $domainId, 'input' => $input, 'response' => $response->json()]);
                 throw ValidationException::withMessages(['record' => 'Failed to create DNS record: '.($response->json('errors')[0]['message'] ?? 'Unknown error')]);
             }
 
@@ -194,7 +190,7 @@ class Desec extends AbstractDNSProvider
                 'modified_on' => null,
             ];
         } catch (Throwable $e) {
-            Log::error('Porkbun createRecord exception', ['error' => $e->getMessage()]);
+            Log::error('deSEC createRecord exception', ['error' => $e->getMessage()]);
             throw ValidationException::withMessages(['record' => 'Failed to create DNS record: '.$e->getMessage()]);
         }
     }
@@ -212,7 +208,7 @@ class Desec extends AbstractDNSProvider
             ]);
 
             if (! $response->successful()) {
-                Log::error('Failed to update Porkbun DNS record', ['domainId' => $domainId, 'recordId' => $recordId, 'input' => $input, 'response' => $response->json()]);
+                Log::error('Failed to update deSEC DNS record', ['domainId' => $domainId, 'recordId' => $recordId, 'input' => $input, 'response' => $response->json()]);
                 throw ValidationException::withMessages(['record' => 'Failed to update DNS record: '.($response->json('errors')[0]['message'] ?? 'Unknown error')]);
             }
 
@@ -227,7 +223,7 @@ class Desec extends AbstractDNSProvider
                 'modified_on' => now(),
             ];
         } catch (Throwable $e) {
-            Log::error('Porkbun updateRecord exception', ['error' => $e->getMessage()]);
+            Log::error('deSEC updateRecord exception', ['error' => $e->getMessage()]);
             throw ValidationException::withMessages(['record' => 'Failed to update DNS record: '.$e->getMessage()]);
         }
     }
@@ -241,14 +237,14 @@ class Desec extends AbstractDNSProvider
             ]);
 
             if (! $response->successful()) {
-                Log::error('Failed to delete Porkbun DNS record', ['domainId' => $domainId, 'recordId' => $recordId, 'response' => $response->json()]);
+                Log::error('Failed to delete deSEC DNS record', ['domainId' => $domainId, 'recordId' => $recordId, 'response' => $response->json()]);
 
                 return false;
             }
 
             return true;
         } catch (Throwable $e) {
-            Log::error('Porkbun deleteRecord exception', ['error' => $e->getMessage()]);
+            Log::error('deSEC deleteRecord exception', ['error' => $e->getMessage()]);
 
             return false;
         }
