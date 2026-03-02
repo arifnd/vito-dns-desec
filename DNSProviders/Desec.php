@@ -159,13 +159,12 @@ class Desec extends AbstractDNSProvider
     public function createRecord(string $domainId, array $input): array
     {
         try {
-            $response = $this->getClient()->post("dns/create/{$domainId}", [
-                'apikey' => $this->dnsProvider->credentials['apikey'],
-                'secretapikey' => $this->dnsProvider->credentials['secretapikey'],
+            $subname = str($input['name'])->remove($domainId);
+            $response = $this->getClient()->post("domains/{$domainId}/rrsets/", [
                 'type' => $input['type'],
-                'name' => $input['name'],
-                'content' => $input['content'],
-                'ttl' => $input['ttl'] ?? 600, // TODO: set minimum ttl to 600
+                'subname' => $subname,
+                'content' => [$input['content']],
+                'ttl' => $input['ttl'] ?? 3600, // TODO: set minimum ttl to 3600
             ]);
 
             if (! $response->successful()) {
@@ -176,7 +175,7 @@ class Desec extends AbstractDNSProvider
             $id = $response->json('id');
 
             return [
-                'id' => $id,
+                'id' => $subname,
                 'type' => $input['type'],
                 'name' => $input['name'],
                 'content' => $input['content'],
