@@ -102,7 +102,7 @@ class Desec extends AbstractDNSProvider
     public function getDomain(string $domainId): array
     {
         try {
-            $response = $this->getClient()->get('domains/$domainId');
+            $response = $this->getClient()->get("domains/{$domainId}");
 
             if (! $response->successful()) {
                 Log::error('Failed to fetch deSEC domain', ['domainId' => $domainId, 'response' => $response->json()]);
