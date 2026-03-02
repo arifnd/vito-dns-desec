@@ -51,7 +51,12 @@ class Desec extends AbstractDNSProvider
         try {
             // Use /zones endpoint to verify token works for both user-scoped and account-scoped tokens
             // This also verifies the token has Zone:Read permissions which we need
-            $response = $this->getClient()->get('domains/');
+            $response = Http::withHeaders([
+                'Authorization' => 'Token '.$credentials['token'],
+                'Content-Type' => 'application/json',
+            ])
+                ->baseUrl(self::API_BASE_URL)
+                ->get('domains/');
 
             if ($response->successful()) {
                 return true;
