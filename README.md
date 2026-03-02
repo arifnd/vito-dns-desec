@@ -1,0 +1,1 @@
+# deSEC DNS plugin for VitoDeploy
