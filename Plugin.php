@@ -10,7 +10,7 @@ use App\DTOs\DynamicForm;
 
 class Plugin extends AbstractPlugin
 {
-    protected string $name = 'deSEC';
+    protected string $name = 'deSEC DNS Plugin';
 
     protected string $description = 'deSEC DNS plugin for VitoDeploy';
 
@@ -24,7 +24,7 @@ class Plugin extends AbstractPlugin
     private function desec(): void
     {
         RegisterDNSProvider::make(Desec::id())
-            ->label('deSEC DNS Plugin')
+            ->label('deSEC')
             ->handler(Desec::class)
             ->form(
                 DynamicForm::make([
