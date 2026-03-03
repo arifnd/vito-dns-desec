@@ -191,7 +191,7 @@ class Desec extends AbstractDNSProvider
     public function updateRecord(string $domainId, string $recordId, array $input): array
     {
         try {
-            $response = $this->getClient()->put("domains/{$domainId}/rrsets/{$recordId}/{$input['type']}", [
+            $response = $this->getClient()->put("domains/{$domainId}/rrsets/{$recordId}/{$input['type']}/", [
                 'type' => $input['type'],
                 'subname' => $recordId,
                 'records' => [$input['content']],
