@@ -191,12 +191,10 @@ class Desec extends AbstractDNSProvider
     public function updateRecord(string $domainId, string $recordId, array $input): array
     {
         try {
-            $response = $this->getClient()->post("dns/edit/{$domainId}/{$recordId}", [
-                'apikey' => $this->dnsProvider->credentials['apikey'],
-                'secretapikey' => $this->dnsProvider->credentials['secretapikey'],
+            $response = $this->getClient()->put("domains/{$domainId}/rrsets/{$recordId}/{$input['type']}", [
                 'type' => $input['type'],
                 'name' => $input['name'],
-                'content' => $input['content'],
+                'records' => [$input['content']],
                 'ttl' => max($input['ttl'], 3600),
             ]);
 
