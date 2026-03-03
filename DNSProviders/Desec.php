@@ -192,7 +192,7 @@ class Desec extends AbstractDNSProvider
         try {
             $response = $this->getClient()->put("domains/{$domainId}/rrsets/{$recordId}/{$input['type']}/", [
                 'type' => $input['type'],
-                'subname' => $recordId,
+                'subname' => $input['name'],
                 'records' => [$input['content']],
                 'ttl' => max($input['ttl'], 3600),
             ]);
