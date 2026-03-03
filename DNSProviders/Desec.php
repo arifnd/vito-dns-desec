@@ -139,7 +139,7 @@ class Desec extends AbstractDNSProvider
                 return [
                     'id' => $record['subname'],
                     'type' => $record['type'],
-                    'name' => $record['name'],
+                    'name' => $record['subname'],
                     'content' => $record['records'][0],
                     'ttl' => $record['ttl'],
                     'proxied' => false,
@@ -157,10 +157,9 @@ class Desec extends AbstractDNSProvider
     public function createRecord(string $domainId, array $input): array
     {
         try {
-            $subname = str($input['name'])->remove($domainId);
             $response = $this->getClient()->post("domains/{$domainId}/rrsets/", [
                 'type' => $input['type'],
-                'subname' => $subname,
+                'subname' => $input['name'],
                 'records' => [$input['content']],
                 'ttl' => max($input['ttl'], 3600),
             ]);
