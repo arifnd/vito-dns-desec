@@ -2,12 +2,12 @@
 
 namespace App\Vito\Plugins\Arifnd\VitoDnsDesec\DNSProviders;
 
+use App\DNSProviders\AbstractDNSProvider;
 use App\Models\DNSProvider as DNSProviderModel;
 use Illuminate\Http\Client\PendingRequest;
 use Illuminate\Support\Facades\Http;
 use Illuminate\Support\Facades\Log;
 use Illuminate\Validation\ValidationException;
-use App\DNSProviders\AbstractDNSProvider;
 use Throwable;
 
 class Desec extends AbstractDNSProvider
@@ -102,7 +102,7 @@ class Desec extends AbstractDNSProvider
     public function getDomain(string $domainId): array
     {
         try {
-            $response = $this->getClient()->get("domains/");
+            $response = $this->getClient()->get('domains/');
 
             if (! $response->successful()) {
                 Log::error('Failed to fetch deSEC domain', ['domainId' => $domainId, 'response' => $response->json()]);
