@@ -49,8 +49,6 @@ class Desec extends AbstractDNSProvider
     public function connect(array $credentials): bool
     {
         try {
-            // Use /zones endpoint to verify token works for both user-scoped and account-scoped tokens
-            // This also verifies the token has Zone:Read permissions which we need
             $response = Http::withHeaders([
                 'Authorization' => 'Token '.$credentials['token'],
                 'Content-Type' => 'application/json',
@@ -164,7 +162,7 @@ class Desec extends AbstractDNSProvider
                 'type' => $input['type'],
                 'subname' => $subname,
                 'records' => [$input['content']],
-                'ttl' => $input['ttl'] ?? 3600, // TODO: set minimum ttl to 3600
+                'ttl' => max($input['ttl'], 3600),
             ]);
 
             if (! $response->successful()) {
@@ -199,7 +197,7 @@ class Desec extends AbstractDNSProvider
                 'type' => $input['type'],
                 'name' => $input['name'],
                 'content' => $input['content'],
-                'ttl' => $input['ttl'] ?? 600, // TODO: set minimum ttl to 600
+                'ttl' => max($input['ttl'], 3600),
             ]);
 
             if (! $response->successful()) {
@@ -214,7 +212,7 @@ class Desec extends AbstractDNSProvider
                 'content' => $input['content'],
                 'ttl' => $input['ttl'],
                 'proxied' => false,
-                'created_on' => now(), // TODO: get real created data
+                'created_on' => null,
                 'modified_on' => now(),
             ];
         } catch (Throwable $e) {
